@@ -9,6 +9,7 @@ use App\Http\Resources\Api\V1\UserCollection;
 use App\Http\Resources\Api\V1\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Throwable;
@@ -22,7 +23,7 @@ class UserController extends Controller
         return new UserCollection($users);
     }
 
-    public function store(UserStoreRequest $request): UserResource
+    public function store(UserStoreRequest $request): UserResource|JsonResponse
     {
         try {
             DB::beginTransaction();
@@ -45,7 +46,7 @@ class UserController extends Controller
         return new UserResource($user);
     }
 
-    public function update(UserUpdateRequest $request, User $user): UserResource
+    public function update(UserUpdateRequest $request, User $user): UserResource|JsonResponse
     {
         try {
             DB::beginTransaction();
@@ -63,9 +64,10 @@ class UserController extends Controller
         }
     }
 
-    public function destroy(Request $request, User $user): Response
+    public function destroy(Request $request, User $user): Response|JsonResponse
     {
         try {
+            
             DB::beginTransaction();
 
             $user->delete();

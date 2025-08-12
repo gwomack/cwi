@@ -4,9 +4,15 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\ApiTokenController;
 use App\Http\Controllers\Api\V1\UserController;
 
-Route::post('v1/token', [ApiTokenController::class, 'generateToken']);
+Route::get('health', function () {
+    return response()->json([
+        'status' => 'ok',
+    ]);
+});
 
-Route::middleware('auth:sanctum')->prefix('v1')
+Route::post('token', [ApiTokenController::class, 'generateToken']);
+
+Route::middleware('auth:sanctum')
     ->group(function () {
         Route::apiResource('users', UserController::class);
     });

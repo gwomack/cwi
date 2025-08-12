@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Api\V1;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Password;
 
 class UserUpdateRequest extends FormRequest
 {
@@ -20,11 +21,9 @@ class UserUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string'],
-            'email' => ['required', 'email'],
-            'email_verified_at' => ['nullable'],
-            'password' => ['required', 'password'],
-            'remember_token' => ['nullable', 'string', 'max:100'],
+            'name' => ['sometimes', 'string'],
+            'email' => ['sometimes', 'email'],
+            'password' => ['sometimes', 'confirmed', Password::min(4)->letters()],
         ];
     }
 }
