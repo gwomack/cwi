@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api\V1;
 
+use Illuminate\Validation\Rules\Password;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserStoreRequest extends FormRequest
@@ -21,9 +22,9 @@ class UserStoreRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string'],
-            'email' => ['required', 'email'],
+            'email' => ['required', 'email', 'unique:users,email'],
             'email_verified_at' => ['nullable'],
-            'password' => ['required', 'password'],
+            'password' => ['required', 'confirmed', Password::min(4)->letters()],
             'remember_token' => ['nullable', 'string', 'max:100'],
         ];
     }
