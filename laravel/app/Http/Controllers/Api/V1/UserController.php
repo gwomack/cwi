@@ -10,21 +10,34 @@ use App\Http\Resources\Api\V1\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class UserController extends Controller
 {
     public function index(Request $request): UserCollection
     {
-        $users = User::all();
+        $users = User::whereNot('email', 'like', '%@m2m.wci')->paginate(10);
 
         return new UserCollection($users);
     }
 
     public function store(UserStoreRequest $request): UserResource
     {
-        $user = User::create($request->validated());
+        try {
+            DB::beginTransaction();
 
-        return new UserResource($user);
+            $user = User::create($request->validated());
+
+            DB::commit();
+
+            return new UserResource($user);
+        } catch (Throwable $th) {
+
+            DB::rollBack();
+
+            return response()->json(['error' => $th->getMessage()], 500);
+        }
     }
 
     public function show(Request $request, User $user): UserResource
@@ -34,15 +47,37 @@ class UserController extends Controller
 
     public function update(UserUpdateRequest $request, User $user): UserResource
     {
-        $user->update($request->validated());
+        try {
+            DB::beginTransaction();
 
-        return new UserResource($user);
+            $user->update($request->validated());
+
+            DB::commit();
+
+            return new UserResource($user);
+        } catch (Throwable $th) {
+
+            DB::rollBack();
+
+            return response()->json(['error' => $th->getMessage()], 500);
+        }
     }
 
     public function destroy(Request $request, User $user): Response
     {
-        $user->delete();
+        try {
+            DB::beginTransaction();
 
-        return response()->noContent();
+            $user->delete();
+
+            DB::commit();
+
+            return response()->noContent();
+        } catch (Throwable $th) {
+
+            DB::rollBack();
+
+            return response()->json(['error' => $th->getMessage()], 500);
+        }
     }
 }
