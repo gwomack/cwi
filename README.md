@@ -119,7 +119,7 @@ Criar uma aplicação Laravel simples com:
    M2M_SECRET_KEY=sua_chave
    TOKEN=chave_gerada_aqui
    NODE_URL=http://localhost:3000
-   ```
+  
    node/.env
    TOKEN=chave_gerada_aqui
    ```
