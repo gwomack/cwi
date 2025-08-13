@@ -21,7 +21,7 @@ final class UserControllerTest extends TestCase
     {
         $users = User::factory()->count(3)->create();
 
-        $response = $this->get(route('users.index'));
+        $response = login()->get(route('users.index'));
 
         $response->assertOk();
         $response->assertJsonStructure([]);
@@ -34,7 +34,7 @@ final class UserControllerTest extends TestCase
         $this->assertActionUsesFormRequest(
             \App\Http\Controllers\Api\V1\UserController::class,
             'store',
-            \App\Http\Requests\Api\V1\UserControllerStoreRequest::class
+            \App\Http\Requests\Api\V1\UserStoreRequest::class
         );
     }
 
@@ -45,7 +45,7 @@ final class UserControllerTest extends TestCase
         $email = fake()->safeEmail();
         $password = fake()->password();
 
-        $response = $this->post(route('users.store'), [
+        $response = login()->post(route('users.store'), [
             'name' => $name,
             'email' => $email,
             'password' => $password,
@@ -69,7 +69,7 @@ final class UserControllerTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->get(route('users.show', $user));
+        $response = login()->get(route('users.show', $user));
 
         $response->assertOk();
         $response->assertJsonStructure([]);
@@ -82,7 +82,7 @@ final class UserControllerTest extends TestCase
         $this->assertActionUsesFormRequest(
             \App\Http\Controllers\Api\V1\UserController::class,
             'update',
-            \App\Http\Requests\Api\V1\UserControllerUpdateRequest::class
+            \App\Http\Requests\Api\V1\UserUpdateRequest::class
         );
     }
 
@@ -94,7 +94,7 @@ final class UserControllerTest extends TestCase
         $email = fake()->safeEmail();
         $password = fake()->password();
 
-        $response = $this->put(route('users.update', $user), [
+        $response = login()->put(route('users.update', $user), [
             'name' => $name,
             'email' => $email,
             'password' => $password,
@@ -116,7 +116,7 @@ final class UserControllerTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->delete(route('users.destroy', $user));
+        $response = login()->delete(route('users.destroy', $user));
 
         $response->assertNoContent();
 
